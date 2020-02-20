@@ -1,0 +1,63 @@
+user nginx;
+worker_processes 1;
+
+error_log /dev/stderr warn;
+pid /var/run/nginx.pid;
+
+events {
+	worker_connections {{WORKER_CONNECTIONS}};
+}
+
+http {
+	include /etc/nginx/mime.types;
+	default_type application/octet-stream;
+
+	log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+	                '$status $body_bytes_sent "$http_referer" '
+	                '"$http_user_agent" "$http_x_forwarded_for"'
+	;
+
+	access_log /dev/stdout main;
+
+	sendfile on;
+	server_tokens off;
+
+	# Only required for ssl_stapling
+	resolver {{RESOLVER}};
+
+	client_header_buffer_size 4k;
+	client_max_body_size {{CLIENT_MAX_BODY_SIZE}};
+
+	include ssl.conf;
+
+{{if GZIP_ENABLED
+	gzip on;
+	gzip_types {{GZIP_TYPES}};
+	gzip_min_length 1000;
+	gzip_proxied any;
+}}
+
+	add_header X-Frame-Options sameorigin;
+	add_header X-Content-Type-Options nosniff;
+
+	server {
+		listen 80;
+		server_name _;
+
+		root /usr/share/nginx/html;
+
+		location /.well-known/ {
+			break;
+		}
+
+		location / {
+			return 301 https://$host$request_uri;
+		}
+	}
+
+	include /etc/nginx/conf.d/*.conf;
+}
+
+stream {
+	include /etc/nginx/stream.d/*.conf;
+}
