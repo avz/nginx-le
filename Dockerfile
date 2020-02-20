@@ -29,7 +29,9 @@ ENV SERVER_NAMES="api.example.com api2.example.com" \
     CORS_ALLOW_HEADERS="Authorization,DNT,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type" \
     CLIENT_MAX_BODY_SIZE="8M" \
     # Required by ssl_stapling
-    RESOLVER="8.8.8.8"
+    RESOLVER="8.8.8.8" \
+    # Set "1" to add --dry-run to certbot
+    LE_DRY_RUN=""
 
 EXPOSE 80 443
 

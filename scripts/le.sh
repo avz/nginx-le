@@ -33,9 +33,16 @@ if certIsExists; then
 	fi
 fi
 
+dryRun=
+
+if [ ! -z "${LE_DRY_RUN}" ]; then
+	dryRun=--dry-run
+fi
+
 certbot certonly \
 	-t \
 	-n \
+	${dryRun} \
 	--agree-tos \
 	--renew-by-default \
 	--email "${LE_EMAIL}" \
