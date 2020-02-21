@@ -7,19 +7,21 @@ certIsExists () {
 }
 
 certRenewIsRequired () {
-	openssl x509 -checkend "${renewInterval}" -in "${SSL_CERT}" > /dev/null
+	! openssl x509 -checkend "${renewInterval}" -in "${SSL_CERT}" > /dev/null
 }
 
 certDomains () {
-	openssl x509 -in "${SSL_CERT}" -text -noout | egrep -o 'DNS.*' | sed -e 's/,? DNS://g' | tr , ' '
+	openssl x509 -in "${SSL_CERT}" -text -noout | egrep -o 'DNS.*' | sed -e 's/DNS://g' | tr -d ' ' | tr , ' '
 }
 
 domainsListsIsSame () {
-	test -z "$(echo "${1}" "${2}" | tr ' ' '\n' | sort | uniq -d)"
+	test -z "$(echo "${1}" "${2}" | tr ' ' '\n' | sort | uniq -u)"
 }
 
 if certIsExists; then
 	existCertDomains=$(certDomains)
+
+	echo Found existing certificate for "${existCertDomains}" '('"${SSL_CERT}"')'
 
 	if ! domainsListsIsSame "${SERVER_NAMES}" "${existCertDomains}"; then
 		echo "Certificate ${SSL_CERT} contains [${existCertDomains}] but [${SERVER_NAMES}] is expected." \
@@ -29,6 +31,8 @@ if certIsExists; then
 	fi
 
 	if ! certRenewIsRequired; then
+		echo 'Certificate will not expire'
+
 		exit 0
 	fi
 fi
