@@ -24,6 +24,9 @@ services:
             ## https://letsencrypt.org/docs/expiration-emails/
             LE_EMAIL: bob@example.com
 
+            ## Uncomment this to run certbot with --dry-run
+            # LE_DRY_RUN="yes"
+
             ## Simple proxy HTTP
             # PROXY_PASS: http://host:8080
 
