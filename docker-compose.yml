@@ -35,3 +35,10 @@ services:
 
             ## ...
             ## See all options in Dockerfile ENV
+
+        # volumes:
+            ## To make dhparams persistent
+            # - /path/to/ssl:/etc/nginx/ssl
+
+            ## To make certificates persistent
+            # - /path/to/letsencrypt:/etc/letsencrypt

@@ -1,6 +1,6 @@
 # From https://mozilla.github.io/server-side-tls/ssl-config-generator/
 
-# ssl_dhparam /etc/nginx/ssl/dhparams.pem;
+ssl_dhparam /etc/nginx/ssl/dhparams.pem;
 
 ssl_session_timeout 1d;
 ssl_session_cache shared:SSL:50m;
