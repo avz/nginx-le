@@ -3,7 +3,7 @@
 awk '
 	function isTruthy(str)
 	{
-		return length(str) > 0;
+		return length(str) > 0
 	}
 
 	function lookBlockLength(str, _, len, prev, depth, op)
@@ -13,67 +13,67 @@ awk '
 		depth = 1
 
 		while (match(str, /\{\{|\}\}/)) {
-			op = substr(str, RSTART, RLENGTH);
-			str = substr(str, RSTART + RLENGTH);
+			op = substr(str, RSTART, RLENGTH)
+			str = substr(str, RSTART + RLENGTH)
 			len += RSTART + RLENGTH - 1
 
 			if (op == "{{") {
-				depth++;
+				depth++
 
-				continue;
+				continue
 			}
 
-			depth--;
+			depth--
 
 			if (depth == 0) {
-				return len;
+				return len
 			}
 		}
 
-		return length(str);
+		return length(str)
 	}
 
 	function execute(str, _, condition, bl) {
 		while (match(str, /\{\{/)) {
-			print substr(str, 1, RSTART - 1);
+			print substr(str, 1, RSTART - 1)
 
-			str = substr(str, RSTART + 2);
+			str = substr(str, RSTART + 2)
 
 			if (match(str, /^[A-Z_][A-Z_0-9]*}}/)) {
-				print ENVIRON[substr(str, RSTART, RLENGTH - 2)];
+				print ENVIRON[substr(str, RSTART, RLENGTH - 2)]
 
-				str = substr(str, RSTART + RLENGTH);
+				str = substr(str, RSTART + RLENGTH)
 
-				continue;
+				continue
 			}
 
 			if (match(str, /^if [A-Z_][A-Z_0-9]*[[:space:]]/)) {
 				condition = substr(str, RSTART + 3, RLENGTH - 4)
-				str = substr(str, RSTART + RLENGTH);
+				str = substr(str, RSTART + RLENGTH)
 
-				bl = lookBlockLength(str);
+				bl = lookBlockLength(str)
 
 				if (isTruthy(ENVIRON[condition])) {
 					execute(substr(str, 1, bl - 2))
 				}
 
-				str = substr(str, bl + 1);
+				str = substr(str, bl + 1)
 
-				continue;
+				continue
 			}
 
 			print "{{"
 
-			str = substr(str, RSTART + RLENGTH);
+			str = substr(str, RSTART + RLENGTH)
 		}
 
 		print str
 	}
 
 	BEGIN {
-		ORS = "";
+		ORS = ""
 
-		buf = "";
+		buf = ""
 	}
 
 	{
@@ -81,6 +81,6 @@ awk '
 	}
 
 	END {
-		execute(buf);
+		execute(buf)
 	}
 '
