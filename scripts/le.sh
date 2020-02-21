@@ -21,7 +21,7 @@ domainsListsIsSame () {
 if certIsExists; then
 	existCertDomains=$(certDomains)
 
-	echo Found existing certificate for "${existCertDomains}" '('"${SSL_CERT}"')'
+	echo "Found existing certificate for ${existCertDomains} (${SSL_CERT})"
 
 	if ! domainsListsIsSame "${SERVER_NAMES}" "${existCertDomains}"; then
 		echo "Certificate ${SSL_CERT} contains [${existCertDomains}] but [${SERVER_NAMES}] is expected." \
@@ -31,7 +31,7 @@ if certIsExists; then
 	fi
 
 	if ! certRenewIsRequired; then
-		echo 'Certificate will not expire'
+		echo 'Certificate renew is not required'
 
 		exit 0
 	fi
