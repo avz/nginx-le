@@ -1,9 +1,17 @@
 FROM nginx:1.17.8-alpine
 
 RUN \
-	rm -rf /etc/nginx/conf.d && \
-	apk add  --update certbot openssl && \
-	rm -rf /var/cache/apk/*
+	rm -rf /etc/nginx/conf.d \
+	&& apk add  --update certbot openssl \
+	&& rm -rf /var/cache/apk/* \
+	&& addgroup -g 2001 -S nginx-le \
+	&& adduser -S -D -H -u 2001 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx-le nginx-le \
+	&& mkdir -p /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt \
+	&& chown -R nginx-le:nginx-le /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt \
+	&& mkdir -p /etc/nginx/ssl \
+	&& chown -R nginx-le:nginx-le /etc/nginx \
+	&& mkdir -p /usr/share/nginx/html/.well-known \
+	&& chown -R nginx-le:nginx-le /usr/share/nginx/html/.well-known
 
 COPY scripts/entrypoint.sh /entrypoint.sh
 COPY scripts /r/scripts
@@ -33,6 +41,8 @@ ENV SERVER_NAMES="api.example.com api2.example.com" \
     # Set "1" to add --dry-run to certbot
     LE_DRY_RUN=""
 
-EXPOSE 80 443
+EXPOSE 8080 4430
+
+USER 2001
 
 CMD ["sh", "/entrypoint.sh"]

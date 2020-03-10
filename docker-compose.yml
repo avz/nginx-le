@@ -14,8 +14,8 @@ services:
                 max-file: "5"
 
         ports:
-            - "80:80"
-            - "443:443"
+            - "80:8080"
+            - "443:4430"
 
         environment:
             ## Space-separated list of domains to host
@@ -41,7 +41,7 @@ services:
 
         # volumes:
             ## To make dhparams persistent
-            # - /path/to/ssl:/etc/nginx/ssl
+            # - ssl:/etc/nginx/ssl # make sure is writable for user 2001
 
             ## To make certificates persistent
-            # - /path/to/letsencrypt:/etc/letsencrypt
+            # - letsencrypt:/etc/letsencrypt # make sure is writable for user 2001
