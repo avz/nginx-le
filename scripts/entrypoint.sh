@@ -30,7 +30,7 @@ mkdir -p /etc/nginx/conf.d
 
 		nginx -s reload
 
-		sleep 10d
+		sleep $((24 + $RANDOM * 24 / 32768))h
 	done
 ) &
 

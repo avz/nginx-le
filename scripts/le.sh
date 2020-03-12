@@ -1,6 +1,6 @@
 #!/bin/sh
 
-renewInterval=$((30 * 24 * 60 * 60))
+renewInterval=$((9 * 24 * 60 * 60 + ($RANDOM * 4 * 24 * 60 * 60 / 36768)))
 
 certIsExists () {
 	test -f "${SSL_CERT}"
