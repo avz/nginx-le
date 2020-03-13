@@ -22,9 +22,13 @@ ENV SERVER_NAMES="api.example.com api2.example.com" \
     LOCATION="/" \
     # You must only set PROXY_PASS or FASTCGI_PASS
     PROXY_PASS="" \
+    PROXY_CONNECT_TIMEOUT="60" \
+    PROXY_SEND_TIMEOUT="60" \
+    PROXY_READ_TIMEOUT="60" \
     FASTCGI_PASS="" \
     # Specially for php-fpm
     FASTCGI_PARAM_SCRIPT_FILENAME="" \
+    FASTCGI_READ_TIMEOUT="60" \
     WORKER_CONNECTIONS="1024" \
     # Set empty string to disable
     GZIP_ENABLED="true" \
