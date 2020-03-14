@@ -10,9 +10,9 @@ server {
 
 	location {{LOCATION}} {
 {{if CORS_ENABLED
-		add_header 'Access-Control-Allow-Origin' '{{CORS_ALLOW_ORIGIN}}';
-		add_header 'Access-Control-Allow-Methods' '{{CORS_ALLOW_METHODS}}';
-		add_header 'Access-Control-Allow-Headers' 'Content-Type,Authorization';
+		add_header 'Access-Control-Allow-Origin' '{{CORS_ALLOW_ORIGIN}}' always;
+		add_header 'Access-Control-Allow-Methods' '{{CORS_ALLOW_METHODS}}' always;
+		add_header 'Access-Control-Allow-Headers' 'Content-Type,Authorization' always;
 
 		if ($request_method = 'OPTIONS') {
 			add_header 'Access-Control-Max-Age' 3600;
