@@ -1,5 +1,5 @@
 server {
-	listen 4430 ssl;
+	listen 4430 ssl http2;
 	server_name {{SERVER_NAMES}};
 
 	root /srv/docroot/;
