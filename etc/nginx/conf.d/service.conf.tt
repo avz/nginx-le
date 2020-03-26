@@ -10,20 +10,32 @@ server {
 
 	location {{LOCATION}} {
 {{if CORS_ENABLED
+	if ($http_origin) {
 		add_header 'Access-Control-Allow-Origin' '{{CORS_ALLOW_ORIGIN}}' always;
 		add_header 'Access-Control-Allow-Methods' '{{CORS_ALLOW_METHODS}}' always;
-		add_header 'Access-Control-Allow-Headers' 'Content-Type,Authorization' always;
+		add_header 'Access-Control-Allow-Credentials' '{{CORS_ALLOW_CREDENTIALS}}' always;
+		add_header 'Access-Control-Allow-Headers' '{{CORS_ALLOW_HEADERS}}' always;
+	}
 
-		if ($request_method = 'OPTIONS') {
-			add_header 'Access-Control-Max-Age' 3600;
-			add_header 'Access-Control-Allow-Credentials' '{{CORS_ALLOW_CREDENTIALS}}';
-			add_header 'Access-Control-Allow-Headers' '{{CORS_ALLOW_HEADERS}}';
+	if ($request_method = 'OPTIONS') {
+		# Why are headers repeated?
+		# See https://www.nginx.com/resources/wiki/start/topics/depth/ifisevil/
+		# And `if` documentation:
+		# These directives are inherited from the previous level if and
+		# only if there are no add_header directives defined on the current level.
 
-			add_header 'Content-Length' 0;
-			add_header 'Content-Type' 'text/plain';
+		add_header 'Access-Control-Allow-Origin' '{{CORS_ALLOW_ORIGIN}}' always;
+		add_header 'Access-Control-Allow-Methods' '{{CORS_ALLOW_METHODS}}' always;
+		add_header 'Access-Control-Allow-Credentials' '{{CORS_ALLOW_CREDENTIALS}}' always;
+		add_header 'Access-Control-Allow-Headers' '{{CORS_ALLOW_HEADERS}}' always;
 
-			return 204;
-		}
+		add_header 'Access-Control-Max-Age' 3600;
+
+		add_header 'Content-Length' 0;
+		add_header 'Content-Type' 'text/plain';
+
+		return 204;
+	}
 }}
 
 {{if PROXY_PASS
