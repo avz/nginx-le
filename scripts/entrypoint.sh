@@ -27,6 +27,7 @@ mkdir -p /etc/nginx/conf.d
 		sh /r/scripts/le.sh
 
 		tt < /r/etc/nginx/conf.d/service.conf.tt > /etc/nginx/conf.d/service.conf
+		tt < /r/etc/nginx/conf.d/service.inc.tt > /etc/nginx/conf.d/service.inc
 
 		nginx -s reload
 

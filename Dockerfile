@@ -21,6 +21,7 @@ ENV SERVER_NAMES="api.example.com api2.example.com" \
     LE_EMAIL="user@example.com" \
     LOCATION="/" \
     FAVICON_LOCAL_PATH="" \
+    FORCE_REDIRECT_TO_HTTPS="true" \
     # You must only set PROXY_PASS or FASTCGI_PASS
     PROXY_PASS="" \
     PROXY_CONNECT_TIMEOUT="60" \

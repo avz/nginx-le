@@ -1,72 +1,33 @@
 server {
-	listen 4430 ssl http2;
-	server_name {{SERVER_NAMES}};
+	listen 8080;
+	server_name _;
 
-	root /srv/docroot/;
+	root /usr/share/nginx/html;
 
-	ssl_certificate {{SSL_CERT}};
-	ssl_certificate_key {{SSL_KEY}};
-	ssl_trusted_certificate {{SSL_TRUSTED_CERT}};
+	location /.well-known/ {
+		break;
+	}
 
-{{if FAVICON_LOCAL_PATH
-	location /favicon.ico {
-		alias {{FAVICON_LOCAL_PATH}};
+{{if FORCE_REDIRECT_TO_HTTPS
+	location / {
+		return 301 https://$host$request_uri;
 
 		break;
 	}
 }}
 
-	location {{LOCATION}} {
-{{if CORS_ENABLED
-		if ($http_origin) {
-			add_header 'Access-Control-Allow-Origin' '{{CORS_ALLOW_ORIGIN}}' always;
-			add_header 'Access-Control-Allow-Methods' '{{CORS_ALLOW_METHODS}}' always;
-			add_header 'Access-Control-Allow-Credentials' '{{CORS_ALLOW_CREDENTIALS}}' always;
-			add_header 'Access-Control-Allow-Headers' '{{CORS_ALLOW_HEADERS}}' always;
-		}
+	include conf.d/service.inc;
+}
 
-		if ($request_method = 'OPTIONS') {
-			# Why are headers repeated?
-			# See https://www.nginx.com/resources/wiki/start/topics/depth/ifisevil/
-			# And `if` documentation:
-			# These directives are inherited from the previous level if and
-			# only if there are no add_header directives defined on the current level.
+server {
+	listen 4430 ssl http2;
+	server_name {{SERVER_NAMES}};
 
-			add_header 'Access-Control-Allow-Origin' '{{CORS_ALLOW_ORIGIN}}' always;
-			add_header 'Access-Control-Allow-Methods' '{{CORS_ALLOW_METHODS}}' always;
-			add_header 'Access-Control-Allow-Credentials' '{{CORS_ALLOW_CREDENTIALS}}' always;
-			add_header 'Access-Control-Allow-Headers' '{{CORS_ALLOW_HEADERS}}' always;
+	ssl_certificate {{SSL_CERT}};
+	ssl_certificate_key {{SSL_KEY}};
+	ssl_trusted_certificate {{SSL_TRUSTED_CERT}};
 
-			add_header 'Access-Control-Max-Age' 3600;
+	root /srv/docroot/;
 
-			add_header 'Content-Length' 0;
-			add_header 'Content-Type' 'text/plain';
-
-			return 204;
-		}
-}}
-
-{{if PROXY_PASS
-		proxy_redirect off;
-		proxy_set_header X-Real-IP $remote_addr;
-		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-		proxy_set_header Host $http_host;
-
-		proxy_connect_timeout {{PROXY_CONNECT_TIMEOUT}};
-		proxy_send_timeout {{PROXY_SEND_TIMEOUT}};
-		proxy_read_timeout {{PROXY_READ_TIMEOUT}};
-
-		proxy_pass {{PROXY_PASS}};
-}}
-
-{{if FASTCGI_PASS
-		include fastcgi_params;
-
-		fastcgi_read_timeout {{FASTCGI_READ_TIMEOUT}};
-{{if FASTCGI_PARAM_SCRIPT_FILENAME
-		fastcgi_param SCRIPT_FILENAME {{FASTCGI_PARAM_SCRIPT_FILENAME}};
-}}
-		fastcgi_pass {{FASTCGI_PASS}};
-}}
-	}
+	include conf.d/service.inc;
 }
