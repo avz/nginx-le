@@ -8,6 +8,14 @@ server {
 	ssl_certificate_key {{SSL_KEY}};
 	ssl_trusted_certificate {{SSL_TRUSTED_CERT}};
 
+{{if FAVICON_LOCAL_PATH
+	location /favicon.ico {
+		alias {{FAVICON_LOCAL_PATH}};
+
+		break;
+	}
+}}
+
 	location {{LOCATION}} {
 {{if CORS_ENABLED
 		if ($http_origin) {

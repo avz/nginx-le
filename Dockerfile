@@ -20,6 +20,7 @@ COPY etc /r/etc
 ENV SERVER_NAMES="api.example.com api2.example.com" \
     LE_EMAIL="user@example.com" \
     LOCATION="/" \
+    FAVICON_LOCAL_PATH="" \
     # You must only set PROXY_PASS or FASTCGI_PASS
     PROXY_PASS="" \
     PROXY_CONNECT_TIMEOUT="60" \
