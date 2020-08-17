@@ -27,7 +27,7 @@ services:
             LE_EMAIL: bob@example.com
 
             ## Uncomment this to run certbot with --dry-run
-            # LE_DRY_RUN="yes"
+            # LE_DRY_RUN: "yes"
 
             ## Simple proxy HTTP
             # PROXY_PASS: http://host:8080
@@ -35,8 +35,8 @@ services:
             ## OR
 
             ## FastCGI (e.g. for php-fpm):
-            # FASTCGI_PASS: http://host:9000
-            # FASTCGI_PARAM_SCRIPT_FILENAME=/sources/index.php
+            # FASTCGI_PASS: host:9000
+            # FASTCGI_PARAM_SCRIPT_FILENAME: /sources/index.php
 
             ## ...
             ## See all options in Dockerfile ENV
