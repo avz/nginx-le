@@ -10,32 +10,32 @@ server {
 
 	location {{LOCATION}} {
 {{if CORS_ENABLED
-	if ($http_origin) {
-		add_header 'Access-Control-Allow-Origin' '{{CORS_ALLOW_ORIGIN}}' always;
-		add_header 'Access-Control-Allow-Methods' '{{CORS_ALLOW_METHODS}}' always;
-		add_header 'Access-Control-Allow-Credentials' '{{CORS_ALLOW_CREDENTIALS}}' always;
-		add_header 'Access-Control-Allow-Headers' '{{CORS_ALLOW_HEADERS}}' always;
-	}
+		if ($http_origin) {
+			add_header 'Access-Control-Allow-Origin' '{{CORS_ALLOW_ORIGIN}}' always;
+			add_header 'Access-Control-Allow-Methods' '{{CORS_ALLOW_METHODS}}' always;
+			add_header 'Access-Control-Allow-Credentials' '{{CORS_ALLOW_CREDENTIALS}}' always;
+			add_header 'Access-Control-Allow-Headers' '{{CORS_ALLOW_HEADERS}}' always;
+		}
 
-	if ($request_method = 'OPTIONS') {
-		# Why are headers repeated?
-		# See https://www.nginx.com/resources/wiki/start/topics/depth/ifisevil/
-		# And `if` documentation:
-		# These directives are inherited from the previous level if and
-		# only if there are no add_header directives defined on the current level.
+		if ($request_method = 'OPTIONS') {
+			# Why are headers repeated?
+			# See https://www.nginx.com/resources/wiki/start/topics/depth/ifisevil/
+			# And `if` documentation:
+			# These directives are inherited from the previous level if and
+			# only if there are no add_header directives defined on the current level.
 
-		add_header 'Access-Control-Allow-Origin' '{{CORS_ALLOW_ORIGIN}}' always;
-		add_header 'Access-Control-Allow-Methods' '{{CORS_ALLOW_METHODS}}' always;
-		add_header 'Access-Control-Allow-Credentials' '{{CORS_ALLOW_CREDENTIALS}}' always;
-		add_header 'Access-Control-Allow-Headers' '{{CORS_ALLOW_HEADERS}}' always;
+			add_header 'Access-Control-Allow-Origin' '{{CORS_ALLOW_ORIGIN}}' always;
+			add_header 'Access-Control-Allow-Methods' '{{CORS_ALLOW_METHODS}}' always;
+			add_header 'Access-Control-Allow-Credentials' '{{CORS_ALLOW_CREDENTIALS}}' always;
+			add_header 'Access-Control-Allow-Headers' '{{CORS_ALLOW_HEADERS}}' always;
 
-		add_header 'Access-Control-Max-Age' 3600;
+			add_header 'Access-Control-Max-Age' 3600;
 
-		add_header 'Content-Length' 0;
-		add_header 'Content-Type' 'text/plain';
+			add_header 'Content-Length' 0;
+			add_header 'Content-Type' 'text/plain';
 
-		return 204;
-	}
+			return 204;
+		}
 }}
 
 {{if PROXY_PASS
