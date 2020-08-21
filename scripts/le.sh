@@ -2,6 +2,10 @@
 
 renewInterval=$((9 * 24 * 60 * 60 + ($RANDOM * 4 * 24 * 60 * 60 / 36768)))
 
+log () {
+	echo "$(date -Iseconds) [avzd/nginx-le] $@"
+}
+
 certIsExists () {
 	test -f "${SSL_CERT}"
 }
@@ -21,17 +25,17 @@ domainsListsIsSame () {
 if certIsExists; then
 	existCertDomains=$(certDomains)
 
-	echo "Found existing certificate for ${existCertDomains} (${SSL_CERT})"
+	log "Found existing certificate for ${existCertDomains} (${SSL_CERT})"
 
 	if ! domainsListsIsSame "${SERVER_NAMES}" "${existCertDomains}"; then
-		echo "Certificate ${SSL_CERT} contains [${existCertDomains}] but [${SERVER_NAMES}] is expected." \
+		log "Certificate ${SSL_CERT} contains [${existCertDomains}] but [${SERVER_NAMES}] is expected." \
 			" Please remove existent certificates or change requested SERVER_NAMES" >&2
 
 		exit 1
 	fi
 
 	if ! certRenewIsRequired; then
-		echo 'Certificate renew is not required'
+		log 'Certificate renew is not required'
 
 		exit 0
 	fi
