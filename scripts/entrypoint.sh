@@ -27,14 +27,27 @@ if [ ! -f /etc/nginx/ssl/dhparams.pem ]; then
     chmod 600 dhparams.pem
 fi
 
-log Cleanup https config to avoid nginx shutdown because cert files was not found
+if [ ! -f "${SSL_CERT}" ]; then
+	log Cleanup https config to avoid nginx shutdown because cert files was not found
 
-rm -f /etc/nginx/conf.d/service.https.conf
+	rm -f /etc/nginx/conf.d/service.https.conf
+fi
+
 mkdir -p /etc/nginx/conf.d
 
+tt < /r/etc/nginx/conf.d/service.http.conf.tt > /etc/nginx/conf.d/service.http.conf
+tt < /r/etc/nginx/conf.d/service.inc.tt > /etc/nginx/conf.d/service.inc
+
 (
-	log Waiting for nginx is ready to accept http-challenge
-	sleep 5
+	log Waiting for nginx is ready to accept http-challenge...
+
+	while ! curl -s -m 1 -f localhost:8080/.well-known/health-check; do
+		log Nginx is not ready yet
+
+		sleep 0.5
+	done
+
+	log Nginx is ready to serve http-challenge
 
 	while true; do
 		log Try to renew or obtain new certs
@@ -43,17 +56,12 @@ mkdir -p /etc/nginx/conf.d
 
 		if [ -f "${SSL_CERT}" ]; then
 			tt < /r/etc/nginx/conf.d/service.https.conf.tt > /etc/nginx/conf.d/service.https.conf
+
+			log Reloading nginx config
+			nginx -s reload
 		else
-			error Certificates not found. HTTPS disabled!
-
-			rm -f /etc/nginx/conf.d/service.https.conf
+			error Unable to obtain cert!
 		fi
-
-		tt < /r/etc/nginx/conf.d/service.http.conf.tt > /etc/nginx/conf.d/service.http.conf
-		tt < /r/etc/nginx/conf.d/service.inc.tt > /etc/nginx/conf.d/service.inc
-
-		log Reloading nginx config
-		nginx -s reload
 
 		sl=$((24 + $RANDOM * 24 / 32768))
 
@@ -62,5 +70,7 @@ mkdir -p /etc/nginx/conf.d
 		sleep ${sl}h
 	done
 ) &
+
+log Starting nginx
 
 exec nginx -g "daemon off;"
