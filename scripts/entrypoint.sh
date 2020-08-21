@@ -17,7 +17,7 @@ if [ ! -f /etc/nginx/ssl/dhparams.pem ]; then
     chmod 600 dhparams.pem
 fi
 
-rm -rf /etc/nginx/conf.d
+rm -f /etc/nginx/conf.d/service.https.conf
 mkdir -p /etc/nginx/conf.d
 
 (
@@ -26,7 +26,8 @@ mkdir -p /etc/nginx/conf.d
 	while true; do
 		sh /r/scripts/le.sh
 
-		tt < /r/etc/nginx/conf.d/service.conf.tt > /etc/nginx/conf.d/service.conf
+		tt < /r/etc/nginx/conf.d/service.https.conf.tt > /etc/nginx/conf.d/service.https.conf
+		tt < /r/etc/nginx/conf.d/service.http.conf.tt > /etc/nginx/conf.d/service.http.conf
 		tt < /r/etc/nginx/conf.d/service.inc.tt > /etc/nginx/conf.d/service.inc
 
 		nginx -s reload
