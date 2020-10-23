@@ -6,6 +6,11 @@ awk '
 		return length(str) > 0
 	}
 
+	function isFalsy(str)
+	{
+		return !isTruthy(str)
+	}
+
 	function lookBlockLength(str, _, len, prev, depth, op)
 	{
 		len = 0
@@ -54,6 +59,21 @@ awk '
 				bl = lookBlockLength(str)
 
 				if (isTruthy(ENVIRON[condition])) {
+					execute(substr(str, 1, bl - 2))
+				}
+
+				str = substr(str, bl + 1)
+
+				continue
+			}
+
+			if (match(str, /^if ! [A-Z_][A-Z_0-9]*[[:space:]]/)) {
+				condition = substr(str, RSTART + 5, RLENGTH - 6)
+				str = substr(str, RSTART + RLENGTH)
+
+				bl = lookBlockLength(str)
+
+				if (isFalsy(ENVIRON[condition])) {
 					execute(substr(str, 1, bl - 2))
 				}
 

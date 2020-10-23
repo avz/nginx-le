@@ -2,8 +2,7 @@ FROM nginx:1.17.8-alpine
 
 RUN \
 	rm -rf /etc/nginx/conf.d \
-	&& apk add  --update certbot openssl curl \
-	&& rm -rf /var/cache/apk/* \
+	&& apk add --no-cache certbot openssl curl \
 	&& addgroup -g 2001 -S nginx-le \
 	&& adduser -S -D -H -u 2001 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx-le nginx-le \
 	&& mkdir -p /etc/letsencrypt /var/log/letsencrypt /var/lib/letsencrypt \

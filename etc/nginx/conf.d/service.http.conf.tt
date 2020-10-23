@@ -22,5 +22,7 @@ server {
 	}
 }}
 
+{{if ! FORCE_REDIRECT_TO_HTTPS
 	include conf.d/service.inc;
+}}
 }
