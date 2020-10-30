@@ -1,6 +1,6 @@
 #!/bin/sh
 
-renewInterval=$((9 * 24 * 60 * 60 + ($RANDOM * 4 * 24 * 60 * 60 / 36768)))
+renewInterval=$((27 * 24 * 60 * 60 + ($RANDOM * 4 * 24 * 60 * 60 / 36768)))
 
 log () {
 	echo "$(date -Iseconds) [avzd/nginx-le] $@"
